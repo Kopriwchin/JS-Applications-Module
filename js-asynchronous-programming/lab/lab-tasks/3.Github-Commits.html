@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Github-Commits</title>
+</head>
+<body>
+    <div>
+        GitHub username:
+        <input id="username">
+    </div>
+
+    <br>
+
+    <div">
+        Repo:
+        <input id="repo">
+        <button id="load-commits">
+            Load Commits
+        </button>
+    </div>
+
+    <div>
+        <ul id="commits">
+
+        </ul>
+    </div>
+
+    <script>
+        let loadButtonEl = document.querySelector('#load-commits');
+        let usernameEl = document.querySelector('#username');
+        let repoNameEl = document.querySelector('#repo');
+        let commitsEl = document.querySelector('#commits');
+        
+        loadButtonEl.addEventListener('click', () => loadCommits(usernameEl, repoNameEl));
+
+        function loadCommits(username, repository) {
+            const baseUrl = `https://api.github.com/repos/${usernameEl.value}/${repoNameEl.value}/commits`;
+
+            fetch(baseUrl)
+                .then(res => res.json())
+                .then(data => {
+                    commitsEl.innerHTML = '';
+                    
+                    Object.values(data)
+                        .forEach(commit => {
+                            let name = commit['commit']['author']['name'];
+                            let message = commit['commit']['message'];
+                            
+                            let liEl = document.createElement('li');
+                            liEl.textContent = `${name}: ${message}`;
+
+                            commitsEl.appendChild(liEl);
+                        });
+                })
+                .catch(err => {
+                    let liEl = document.createElement('li');
+                    liEl.textContent = `Error: 404 (Not Found)`;
+
+                    commitsEl.appendChild(liEl);
+                });
+        }
+    </script>
+</body>
+</html>
