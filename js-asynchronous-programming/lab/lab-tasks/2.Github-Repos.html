@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Github Username:
+    <input id="username"/>
+    <button id="load-repos">Load Repos</button>
+    <ul id="repos"></ul>
+
+    <script>
+       
+        document.getElementById('load-repos').addEventListener('click', () => {
+            let selectedUsername = document.querySelector('#username').value;
+
+            const baseUrl = `https://api.github.com/users/${selectedUsername}/repos`;
+
+            fetch(baseUrl)
+                .then(res => res.json())
+                .then(data => {
+                    repos.innerHTML = '';
+
+                    Object.values(data)
+                        .forEach(repo => {
+                            let hypertextEl = document.createElement('a');
+                            hypertextEl.href = repo['html_url'];
+                            hypertextEl.innerText = repo['full_name'];
+
+                            let repoEl = document.createElement('li');
+
+                            repoEl.appendChild(hypertextEl);
+                            
+                            let listEl = document.getElementById('repos');
+                            listEl.appendChild(repoEl);
+                            
+                            console.log(listEl);
+                        });
+                })
+                .catch(err => console.log(err));
+
+        });
+    </script>
+</body>
+</html>
